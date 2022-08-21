@@ -7,6 +7,13 @@ const getStringFromArrayObj = (array, key, separator = ",") => {
   return result;
 };
 
+// "ramon,  sapo , ,, eli, sandia lopez , sarah" --> [ramon, sapo, eli, sandia lopez, sarah]
+const accurateSplit = (text, separator = ",") => {
+  const splitRegex = new RegExp(`\\s*${separator}\\s*`, "g");
+  const list = text.split(splitRegex);
+  return list.filter((item) => item !== "");
+};
+
 // [1,2,3,4,5,6] --> [3,6,1,2,5,4]
 const shuffleArray = (array) => {
   const results = [];
@@ -21,7 +28,7 @@ const shuffleArray = (array) => {
 };
 
 // [3,6,1,2,5,4] --> [[3,6,1], [2,5,4]]
-const divideArrayIntoBlocks = (array, divisions) => {
+const divideArray = (array, divisions) => {
   const stack = [...array];
   const blockSize = Math.floor(stack.length / divisions);
   let remaining =
@@ -46,12 +53,13 @@ const divideArrayIntoBlocks = (array, divisions) => {
 
 // [1,2,3,4,5,6] --> [[3,6,1], [2,5,4]]
 const getRandomizedTeams = (array, divisions = 2) => {
-  return divideArrayIntoBlocks(shuffleArray(array), divisions);
+  return divideArray(shuffleArray(array), divisions);
 };
 
 module.exports = {
   getStringFromArrayObj,
+  accurateSplit,
   shuffleArray,
-  divideArrayIntoBlocks,
+  divideArray,
   getRandomizedTeams,
 };

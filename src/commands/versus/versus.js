@@ -47,6 +47,12 @@ for (const file of subcommandFiles) {
           subcommand
             .setName(alias)
             .setDescription("Versus by text")
+            .addStringOption((option) =>
+              option
+                .setName("players-list")
+                .setDescription("Enter list of players to separated by commas")
+                .setRequired(true)
+            )
             .addIntegerOption((option) =>
               option.setName("teams").setDescription("Enter teams amount")
             )
@@ -61,10 +67,12 @@ for (const file of subcommandFiles) {
 module.exports = {
   data,
   async execute(interaction, client) {
-    const teamsAmount = interaction.options.getInteger("teams");
+    const teamsAmountInput = interaction.options.getInteger("teams");
+    const playersList = interaction.options.getString("players-list");
     const filter = interaction.options.getString("filter");
-    const subcommand = interaction.options.getSubcommand();
-    switch (subcommand) {
+
+    const teamsAmount = teamsAmountInput !== null ? teamsAmountInput : 2;
+    switch (interaction.options.getSubcommand()) {
       case "voice":
       case "channel":
       case "voz":
@@ -73,10 +81,12 @@ module.exports = {
         break;
       case "host":
         host(interaction, client, teamsAmount);
+        break;
       case "text":
       case "texto":
+        text(interaction, client, playersList, teamsAmount);
+        break;
       default:
-        text(interaction, client, teamsAmount);
         break;
     }
   },

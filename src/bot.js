@@ -5,6 +5,7 @@ const { Client, Collection, GatewayIntentBits } = require("discord.js");
 const fs = require("fs");
 
 const client = new Client({ intents: GatewayIntentBits.Guilds });
+client.clientId = "1010023818892419132";
 client.commands = new Collection();
 client.buttons = new Collection();
 client.commandArray = [];

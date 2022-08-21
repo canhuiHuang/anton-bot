@@ -1,27 +1,23 @@
+const { getChannel } = require("../../utils/crud.js");
+// Deprecated
+// Se Usará Collectors para manejar botones
 module.exports = {
   data: {
-    name: "vs-join",
+    name: "vs-join-cancel",
   },
   async execute(interaction, client) {
-    // console.log(interaction.guild.channels.cache);
+    if (false) {
+      channel.send("hola??. Test success. Alfin oof");
 
-    for (const channelMap of interaction.guild.channels.cache) {
-      const channel = channelMap[1];
-      if (channel.name === "versus") {
-        interaction.guild.channels
-          .fetch(channel.parentId)
-          .then((parent) => {
-            console.log(JSON.stringify(parent));
-            if (parent.name === "DB") {
-              channel.send("hola??. Test success. Alfin oof");
-              // channel.messages.fetch().then((msgs) => console.log(msgs));
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
+      // channel.messages.fetch().then((msgs) => console.log(msgs));
+
+      // Get players from versus
+
+      // Update players
+
+      // Display Embed
     }
+
     // interaction.guild.channels
     //   .fetch("1010350040700682299")
     //   .then((channel) => console.log(channel.messages));

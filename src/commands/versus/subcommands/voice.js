@@ -7,7 +7,7 @@ const {
 const { EmbedBuilder } = require("discord.js");
 
 module.exports = {
-  voice(interaction, client, teamsAmount = 2) {
+  voice(interaction, client, teamsAmount = 2, filter) {
     // Body
 
     interaction.reply({

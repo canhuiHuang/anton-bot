@@ -157,7 +157,7 @@ module.exports = {
             teams.forEach((team, idx) => {
               fields.push({
                 name: `Team ${idx + 1}`,
-                value: getStringFromArrayObj(team, "username"),
+                value: getStringFromArrayObj(team, "username", "\n"),
                 inline: true,
               });
             });

@@ -155,6 +155,8 @@ const getVersusRecord = (channel, identifier) => {
 module.exports = {
   // General
   getChannelMessagesByKey,
+  //getUsers,
+  //getUser,
 
   // Channels
   getChannel,

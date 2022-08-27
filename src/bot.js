@@ -1,6 +1,9 @@
 require("dotenv").config();
 
-const { token } = process.env;
+const token =
+  process.env.NODE_ENV === "production"
+    ? process.env.token
+    : process.env.developToken;
 const { Client, Collection, GatewayIntentBits } = require("discord.js");
 const fs = require("fs");
 

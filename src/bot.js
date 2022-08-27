@@ -1,13 +1,14 @@
 require("dotenv").config();
 
-const token =
-  process.env.NODE_ENV === "production"
-    ? process.env.token
-    : process.env.developToken;
+const { token } = process.env;
 const { Client, Collection, GatewayIntentBits } = require("discord.js");
 const fs = require("fs");
 
-const client = new Client({ intents: GatewayIntentBits.Guilds });
+const { Player } = require("discord-player");
+GatewayIntentBits.GuildVoiceStates;
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates],
+});
 client.clientId = "1010023818892419132";
 client.commands = new Collection();
 client.buttons = new Collection();
@@ -29,4 +30,10 @@ for (const folder of functionFolders) {
 client.handleEvents();
 client.handleCommands();
 client.handleComponents();
+client.player = new Player(client, {
+  ytdlOptions: {
+    quality: "highestaudio",
+    highWaterMark: 1 << 25,
+  },
+});
 client.login(token);

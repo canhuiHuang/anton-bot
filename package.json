@@ -11,11 +11,15 @@
   "author": "Boku & Darkhox",
   "license": "ISC",
   "dependencies": {
+    "@discordjs/builders": "^1.2.0",
+    "@discordjs/opus": "^0.8.0",
     "@discordjs/rest": "^1.0.1",
     "chalk": "^4.1.2",
     "discord-api-types": "^0.37.3",
+    "discord-player": "^5.3.1",
     "discord.js": "^14.2.0",
     "dotenv": "^16.0.1",
+    "ffmpeg-static": "^5.0.2",
     "puppeteer": "^16.1.1"
   }
 }

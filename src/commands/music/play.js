@@ -34,7 +34,6 @@ module.exports = {
     let result = [];
     const searchTypes = ["YOUTUBE_VIDEO", "YOUTUBE_PLAYLIST", "AUTO"];
     for (const type of searchTypes) {
-      console.log(type);
       result = await client.player.search(query, {
         requestedBy: interaction.user,
         searchEngine: QueryType[type],
@@ -46,7 +45,6 @@ module.exports = {
         const song = tracks[0];
         let description;
         let footer;
-        console.log(result);
 
         switch (type) {
           case "YOUTUBE_VIDEO":

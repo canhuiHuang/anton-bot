@@ -1,9 +1,9 @@
-const { SlashCommandBuilder } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("shuffle")
-    .setDescription("Shuffles the queue"),
+    .setName("skip")
+    .setDescription("Skips current song"),
   async execute(interaction, client) {
     await interaction.deferReply({
       fetchReply: true,
@@ -23,9 +23,15 @@ module.exports = {
         ephemeral: true,
       });
 
-    queue.shuffle();
+    const currentSong = queue.current;
+
+    queue.skip();
     await interaction.editReply({
-      content: `The queue of ${queue.tracks.length} songs have been shuffled!`,
+      embeds: [
+        new EmbedBuilder()
+          .setDescription(`${currentSong.title} has been skipped.`)
+          .setThumbnail(currentSong.thumbnail),
+      ],
     });
   },
 };

@@ -2,8 +2,8 @@ const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("shuffle")
-    .setDescription("Shuffles the queue"),
+    .setName("pause")
+    .setDescription("Pauses current song"),
   async execute(interaction, client) {
     await interaction.deferReply({
       fetchReply: true,
@@ -23,9 +23,9 @@ module.exports = {
         ephemeral: true,
       });
 
-    queue.shuffle();
+    queue.setPaused(true);
     await interaction.editReply({
-      content: `The queue of ${queue.tracks.length} songs have been shuffled!`,
+      content: `Song has been paused. Use '/resume' to resume the song.`,
     });
   },
 };

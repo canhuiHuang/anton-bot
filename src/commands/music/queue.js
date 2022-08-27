@@ -17,6 +17,13 @@ module.exports = {
       fetchReply: true,
     });
 
+    if (!interaction.member.voice.channel) {
+      return await interaction.editReply({
+        content: "You need to be in a Voice channel to use this command",
+        ephemeral: true,
+      });
+    }
+
     const queue = client.player.getQueue(interaction.guildId);
     if (!queue || !queue.playing) {
       return await interaction.editReply("There are no songs in the queue");
@@ -26,9 +33,10 @@ module.exports = {
     const page = (interaction.options.getNumber("page") || 1) - 1;
 
     if (page > totalPages)
-      return await interaction.editReply(
-        `Invalid Page. There are only a total of ${totalPages} pages of songs`
-      );
+      return await interaction.editReply({
+        content: `Invalid Page. There are only a total of ${totalPages} pages of songs`,
+        ephemeral: true,
+      });
 
     const queueString = queue.tracks
       .slice(page * 10, page * 10 + 10)

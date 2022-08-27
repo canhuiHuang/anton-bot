@@ -5,12 +5,17 @@ const { EmbedBuilder } = require("discord.js");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("play")
-    .setDescription("on development")
+    .setDescription("Add song to the queue to be played")
     .addStringOption((option) =>
-      option.setName("query").setDescription("Play song by name or youtube url")
+      option
+        .setName("query")
+        .setDescription(
+          "Insert youtube video url, search keys, or playlist url"
+        )
+        .setRequired(true)
     ),
   async execute(interaction, client) {
-    const message = await interaction.deferReply({
+    await interaction.deferReply({
       fetchReply: true,
     });
 
@@ -24,30 +29,53 @@ module.exports = {
     if (!queue.connection)
       await queue.connect(interaction.member.voice.channel);
 
+    let query = interaction.options.getString("query");
     let embed = new EmbedBuilder();
+    let result = [];
+    const searchTypes = ["YOUTUBE_VIDEO", "YOUTUBE_PLAYLIST", "AUTO"];
+    for (const type of searchTypes) {
+      result = await client.player.search(query, {
+        requestedBy: interaction.user,
+        searchEngine: QueryType[type],
+      });
+      if (result.tracks.length === 0) {
+        continue;
+      } else {
+        const { tracks, playlist } = result;
+        const song = tracks[0];
+        let description;
+        let footer;
 
-    let url = interaction.options.getString("query");
-    const result = await client.player.search(url, {
-      requestedBy: interaction.user,
-      searchEngine: QueryType.YOUTUBE_VIDEO,
-    });
+        switch (type) {
+          case "YOUTUBE_VIDEO":
+            await queue.addTrack(song);
+            description = `[${song.title}]{${song.url}} has been added to the queue`;
+            footer = { text: `Duration: ${song.duration}` };
+            break;
+          case "YOUTUBE_PLAYLIST":
+            await queue.addTracks(tracks);
+            description = `${tracks.length} song(s) from [${playlist.title}] have been added to the queue`;
+            footer = { text: `Url: ${playlist.url}` };
+            break;
+          case "AUTO":
+            await queue.addTrack(song);
+            description = `[${song.title}]{${song.url}} has been added to the queue`;
+            footer = { text: `Duration: ${song.duration}` };
+            break;
+          default:
+            break;
+        }
 
-    console.log(result);
-
+        embed
+          .setDescription(description)
+          .setThumbnail(song.thumbnail)
+          .setFooter(footer);
+        break;
+      }
+    }
     if (result.tracks.length === 0) {
       return await interaction.editReply("No results");
     }
-
-    const song = result.tracks[0];
-    await queue.addTrack(song);
-    embed
-      .setDescription(
-        `**[${song.title}]{${song.url}}** has been added to the Queue`
-      )
-      .setThumbnail(song.thumbnail)
-      .setFooter({
-        text: `Duration: ${song.duration}`,
-      });
 
     if (!queue.playing) await queue.play();
 

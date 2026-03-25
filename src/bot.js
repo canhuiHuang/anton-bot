@@ -4,7 +4,7 @@ const { token } = process.env;
 const { Client, Collection, GatewayIntentBits } = require("discord.js");
 const fs = require("fs");
 
-const { Player } = require("discord-player");
+// const { Player } = require("discord-player");
 GatewayIntentBits.GuildVoiceStates;
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates],
@@ -29,11 +29,11 @@ for (const folder of functionFolders) {
 
 client.handleEvents();
 client.handleCommands();
-client.handleComponents();
-client.player = new Player(client, {
-  ytdlOptions: {
-    quality: "highestaudio",
-    highWaterMark: 1 << 25,
-  },
-});
+// client.handleComponents();
+// client.player = new Player(client, {
+//   ytdlOptions: {
+//     quality: "highestaudio",
+//     highWaterMark: 1 << 25,
+//   },
+// });
 client.login(token);

@@ -6,6 +6,7 @@ module.exports = (client) => {
   client.handleCommands = async () => {
     const commandFolders = fs.readdirSync("./src/commands");
     const { commands, commandArray } = client;
+    const guildId = process.env.guild_id;
 
     for (const folder of commandFolders) {
       const commandFiles = fs
@@ -23,9 +24,15 @@ module.exports = (client) => {
     const rest = new REST({ version: "10" }).setToken(process.env.token);
 
     try {
-      console.log("Refreshing application (/) commands.");
+      const route = guildId
+        ? Routes.applicationGuildCommands(client.clientId, guildId)
+        : Routes.applicationCommands(client.clientId);
 
-      await rest.put(Routes.applicationCommands(client.clientId), {
+      console.log(
+        `Refreshing application (/) commands${guildId ? ` for guild ${guildId}` : ""}.`
+      );
+
+      await rest.put(route, {
         body: commandArray,
       });
 

@@ -15,6 +15,8 @@ client.buttons = new Collection();
 client.commandArray = [];
 // client.color = "";
 
+console.log(`[startup] Node ${process.version} on ${process.platform}`);
+
 const functionFolders = fs.readdirSync("./src/functions");
 
 for (const folder of functionFolders) {

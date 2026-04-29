@@ -60,6 +60,10 @@ function writeState(state) {
   fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2));
 }
 
+function logDailyJapaneseVocabState() {
+  console.log("[daily-vocab] State:", readState());
+}
+
 function getTimeParts(timeZone) {
   const formatter = new Intl.DateTimeFormat("en-CA", {
     timeZone,
@@ -290,5 +294,6 @@ function scheduleDailyJapaneseVocab(client) {
 }
 
 module.exports = {
+  logDailyJapaneseVocabState,
   scheduleDailyJapaneseVocab,
 };

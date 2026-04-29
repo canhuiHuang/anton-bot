@@ -3,11 +3,11 @@ const path = require("path");
 const https = require("https");
 
 const STATE_FILE = path.join(process.cwd(), ".daily-japanese-vocab.json");
-const DEFAULT_POST_TIME = process.env.DAILY_JP_VOCAB_TIME || "09:00";
+const DEFAULT_POST_TIME = process.env.DAILY_JP_VOCAB_TIME || "05:13";
 const DEFAULT_TIMEZONE =
   process.env.DAILY_JP_VOCAB_TIMEZONE || "America/Los_Angeles";
 const DEFAULT_MODEL = process.env.OPENAI_MODEL || "gpt-5.4-mini";
-const HISTORY_LIMIT = 20;
+const HISTORY_LIMIT = 1000;
 
 function parseJsonResponse(data, errorMessage) {
   try {
@@ -117,9 +117,27 @@ function createDailyVocabPost(recentWords) {
   const body = JSON.stringify({
     model: DEFAULT_MODEL,
     store: false,
-    max_output_tokens: 260,
-    instructions:
-      "You create one useful Japanese vocabulary of the day for a Discord community. Output concise plain text only, no markdown code fences. Format exactly as: Japanese: <word>\\nReading: <reading>\\nMeaning: <short meaning>\\nExplanation: <1-2 sentence practical explanation>\\nExamples:\\n- <example 1>\\n- <example 2>. Choose practical everyday、casual or work/study vocabulary like 在宅勤務.",
+    max_output_tokens: 320,
+    instructions: `
+    You create one useful Japanese vocabulary of the day for a Discord community.
+
+    - Do not add or delete anything.
+    - Insert your content appropriately by replacing the <> placeholders:
+    - Let the first line be "📘【今日の単語】Word of the Day"
+    - Make sure you're not generating 今日の単語 twice
+
+    ✨ **<Japanese word>**（<reading>）✨
+    → <English meaning>
+    
+    📝 【使い方】Usage
+    <Japanese sentence 1>
+    （<sentence 1 reading>）
+    → <English translation 1>
+    
+    <Japanese sentence 2>
+    （<sentence 2 reading>）
+    → <English translation 2>
+    `,
     input: `Generate a new useful Japanese vocabulary item for today. ${avoidLine}`,
   });
 
@@ -179,8 +197,16 @@ function createDailyVocabPost(recentWords) {
 }
 
 function extractWordFromPost(content) {
-  const match = /^Japanese:\s*(.+)$/im.exec(content);
-  return match?.[1]?.trim() || null;
+  const wordOfDayMatch = /^\s*✨\s*\*\*(.+?)\*\*（.+?）\s*✨\s*$/im.exec(
+    content
+  );
+
+  if (wordOfDayMatch?.[1]) {
+    return wordOfDayMatch[1].trim();
+  }
+
+  const legacyMatch = /^Japanese:\s*(.+)$/im.exec(content);
+  return legacyMatch?.[1]?.trim() || null;
 }
 
 async function postDailyVocabulary(client, channelId, timeZone) {
@@ -204,9 +230,10 @@ async function postDailyVocabulary(client, channelId, timeZone) {
   const content = await createDailyVocabPost(state.recentWords);
   const word = extractWordFromPost(content);
 
-  await channel.send(`今日の単語\n${content}`);
+  await channel.send(`${content}`);
 
   state.lastSentDate = dateKey;
+  console.log(word, state);
   if (word) {
     state.recentWords = [word, ...state.recentWords].slice(0, HISTORY_LIMIT);
   }

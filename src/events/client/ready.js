@@ -1,7 +1,9 @@
-const { scheduleDailyJapaneseVocab } = require("../../services/dailyJapaneseVocab");
+const {
+  scheduleDailyJapaneseVocab,
+} = require("../../services/dailyJapaneseVocab");
 
 module.exports = {
-  name: "ready",
+  name: "clientReady",
   once: true,
   async execute(client) {
     console.log(`Ready ${client.user.tag} is online.`);
